@@ -31,7 +31,7 @@ class Container implements IRunnable
 
     /**
      * 是否调试模式
-     * @var string
+     * @var boolean
      */
     private $m_debug=false;
 
