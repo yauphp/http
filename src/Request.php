@@ -87,6 +87,12 @@ class Request
     public $cookies=[];
 
     /**
+     * 请求主体
+     * @var string
+     */
+    public $body;
+
+    /**
      * 获取请求参数(搜索顺序:get,post)
      * @param string $name
      * @param string $default

@@ -193,6 +193,7 @@ class Container implements IRunnable
         $req->get=$_GET;
         $req->post=$_POST;
         $req->cookies=$_COOKIE;
+        $req->body=file_get_contents("php://input");
 
         //response
         $rsp=new Response();
