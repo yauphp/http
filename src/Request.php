@@ -70,7 +70,7 @@ class Request
 
     /**
      * POST参数
-     * @var string
+     * @var array
      */
     public $post=[];
 
