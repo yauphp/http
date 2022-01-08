@@ -140,7 +140,7 @@ class Response
 
     /**
      * 获取所有的输出cookies
-     * @return \swiftphp\http\Cookie[]
+     * @return Cookie[]
      */
     public function getCookies(){
         return $this->m_cookies;

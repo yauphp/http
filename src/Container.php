@@ -248,7 +248,8 @@ class Container implements IRunnable
         $rsp=$this->m_context->getResponse();
         if(!$rsp->closed()){
 
-            //发送状态码与头部
+            //发送状态码,头部,cookie
+            $cookieSent=false;
             if(!headers_sent()){
                 http_response_code($rsp->getCode());
                 $headers=$rsp->getHeaders();
@@ -262,12 +263,31 @@ class Container implements IRunnable
                         header($name.":".$value);
                     }
                 }
+
+                //发送cookie
+                foreach ($rsp->getCookies() as $cookie){
+                    $sHeader="Set-Cookie: ".$cookie->getName()."=".$cookie->getValue();
+                    if(!empty($cookie->getExpiredAt())){
+                        $sHeader .= "; Max-Age=".$cookie->getExpiredAt();
+                    }
+                    if(!empty($cookie->getPath())){
+                        $sHeader .= "; Path=".$cookie->getPath();
+                    }
+                    if(!empty($cookie->getDomain())){
+                        $sHeader .= "; Domain=".$cookie->getDomain();
+                    }
+                    if($cookie->getSecure()){
+                        $sHeader .= "; Secure";
+                    }
+                    header($sHeader);
+                }
+                $cookieSent=true;
             }
 
-            //输出cookie
-            if(!empty($rsp->getCookies())){
+            //输出cookie(通过头部发送)
+            if(!$cookieSent && !empty($rsp->getCookies())){
                 foreach ($rsp->getCookies() as $cookie){
-                    setcookie($cookie->name,$cookie->value,$cookie->expire,$cookie->path,$cookie->domain,$cookie->secure);
+                    setcookie($cookie->getName(),$cookie->getValue(),$cookie->getExpiredAt(),$cookie->getPath(),$cookie->getDomain(),$cookie->getSecure());
                 }
             }
 
