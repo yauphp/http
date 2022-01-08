@@ -265,26 +265,28 @@ class Container implements IRunnable
                 }
 
                 //发送cookie
-                foreach ($rsp->getCookies() as $cookie){
-                    $sHeader="Set-Cookie: ".$cookie->getName()."=".$cookie->getValue();
-                    if(!empty($cookie->getExpiredAt())){
-                        $sHeader .= "; Max-Age=".$cookie->getExpiredAt();
+                if(!empty($rsp->getCookies())){
+                    foreach ($rsp->getCookies() as $cookie){
+                        $sHeader="Set-Cookie: ".$cookie->getName()."=".$cookie->getValue();
+                        if(!empty($cookie->getExpiredAt())){
+                            $sHeader .= "; Max-Age=".$cookie->getExpiredAt();
+                        }
+                        if(!empty($cookie->getPath())){
+                            $sHeader .= "; Path=".$cookie->getPath();
+                        }
+                        if(!empty($cookie->getDomain())){
+                            $sHeader .= "; Domain=".$cookie->getDomain();
+                        }
+                        if($cookie->getSecure()){
+                            $sHeader .= "; Secure";
+                        }
+                        header($sHeader,false);
                     }
-                    if(!empty($cookie->getPath())){
-                        $sHeader .= "; Path=".$cookie->getPath();
-                    }
-                    if(!empty($cookie->getDomain())){
-                        $sHeader .= "; Domain=".$cookie->getDomain();
-                    }
-                    if($cookie->getSecure()){
-                        $sHeader .= "; Secure";
-                    }
-                    header($sHeader);
+                    $cookieSent=true;
                 }
-                $cookieSent=true;
             }
 
-            //输出cookie(通过头部发送)
+            //输出cookie
             if(!$cookieSent && !empty($rsp->getCookies())){
                 foreach ($rsp->getCookies() as $cookie){
                     setcookie($cookie->getName(),$cookie->getValue(),$cookie->getExpiredAt(),$cookie->getPath(),$cookie->getDomain(),$cookie->getSecure());
